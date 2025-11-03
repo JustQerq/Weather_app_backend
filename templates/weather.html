@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Weather data</title>
+    </head>
+    <style>
+        table, th, td {
+          border:1px solid black;
+        }
+    </style>
+    <body>
+        <table style="width:100%">
+            <tr>
+              <th>ID</th>
+              <th>Date and Time</th>
+              <th>City</th>
+              <th>Country</th>
+              <th>Temperature C</th>
+              <th>Feels like</th>
+              <th>Humidity</th>
+              <th>Condition</th>
+              <th>Wind kph</th>
+            </tr>
+            {%for entry in data%}
+               <tr>
+                 <td>{{entry[0]}}</td>
+                 <td>{{entry[1]}}</td>
+                 <td>{{entry[2]}}</td>
+                 <td>{{entry[3]}}</td>
+                 <td>{{entry[4]}}</td>
+                 <td>{{entry[5]}}</td>
+                 <td>{{entry[6]}}</td>
+                 <td>{{entry[7]}}</td>
+                 <td>{{entry[8]}}</td>
+                </tr>
+            {%endfor%}
+        </table>          
+    </body>
+</html>
