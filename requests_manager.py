@@ -10,7 +10,7 @@ class RequestsManager:
         else:
             self.REQUEST_URLs = request_urls
     
-    def get(self, request, **kwargs):
+    def get(self, request, **kwargs) -> dict:
         """Send HTTP GET request with the provided key-value parameter pairs
 
         Args:
@@ -27,10 +27,10 @@ class RequestsManager:
 
 class WeatherRequestsManager(RequestsManager):
     def __init__(self, api_key="3909896001fb4262833143125250211"):
-        super().__init__(base_url="http://api.weatherapi.com/v1", request_urls={"current":"/current.json", "history":"/history.json"})
+        super().__init__(base_url="http://api.weatherapi.com/v1", request_urls={"current": "/current.json", "history": "/history.json", "autocomplete": "/search.json"})
         self.API_KEY = api_key
     
-    def get(self, request, **kwargs):
+    def get(self, request, **kwargs) -> dict:
         url = self.BASE_URL + self.REQUEST_URLs[request] + f"?key={self.API_KEY}&" + "&".join([f"{k}={v}" for k,v in kwargs.items()])
         response = requests.get(url).json()
         return response
@@ -38,5 +38,6 @@ class WeatherRequestsManager(RequestsManager):
 
 weather_req_manager = WeatherRequestsManager()
 
-response = json.dumps(weather_req_manager.get("history", q="Moscow", dt="2024-12-23"), indent=4)
+response = json.dumps(weather_req_manager.get("autocomplete", q="Lo Great Britain"), indent=4)
+#response = weather_req_manager.get("current", q="New York")["location"]["country"]
 print(response)
