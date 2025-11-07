@@ -34,21 +34,27 @@ def params2sql(received_params, params_dtypes: dict, params_aliases = None, rela
 
 
 def validate_weather(entry):
+    datetime_valid = True
+    location_valid = True
+    data_valid = True
+    
     dt = entry.get("datetime", "")
     if (dt == ""):
-        return False, []
+        datetime_valid = False
     try:
         datetime.datetime.fromisoformat(dt)
     except:
-        return False, []
+        datetime_valid = False
     
     city = entry.get("city", None)
-    if city == "":
-        city = None
+    if city is not None:
+        if city == "" or len(city) > 168:  # Longest city name in the world (Bangkok, Thailand ceremonial name)
+            city = None
     
     country = entry.get("country", None)
-    if country == "":
-        country = None
+    if country is not None:
+        if country == "" or len(country) > 57:  # Longest country name in the world (UK official name)
+            country = None
     
     try:
         latitude = float(entry.get("latitude", None))
@@ -61,7 +67,7 @@ def validate_weather(entry):
         longitude = None
     
     if (city == None) and (country == None) and ((latitude == None) or (longitude==None)):
-        return False, []
+        location_valid = False
     
     try:
         temperature_c = float(entry.get("temperature_c", None))
@@ -94,11 +100,13 @@ def validate_weather(entry):
         condition = str(entry.get("condition", None))
         if condition == "":
             condition = None
+        elif len(condition) > 32:
+            condition = condition[:32]
     except:
         condition = None
     
     if (temperature_c == None) and (feelslike_c == None) and (humidity == None) and (wind_kph==None) and (condition == None):
-        return False, []
+        data_valid = False
     
-    return True, [dt, city, country, latitude, longitude, temperature_c, \
+    return datetime_valid, location_valid, data_valid, [dt, city, country, latitude, longitude, temperature_c, \
         feelslike_c, humidity, condition, wind_kph]

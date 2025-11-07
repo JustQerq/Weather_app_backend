@@ -55,6 +55,9 @@ coverage.xml
 .pytest_cache/
 cover/
 
+# In-development testing
+test.py
+
 # Translations
 *.mo
 *.pot
