@@ -3,8 +3,6 @@ from flask_cors import CORS, cross_origin
 import sqlite3
 from requests_manager import WeatherRequestsManager
 from database_manager import params2sql, validate_weather
-import json
-import datetime
 
 
 app = Flask(__name__)
@@ -19,7 +17,7 @@ weather_forecast_fields = ["date", "city", "country", "latitude", "longitude", "
 @app.route('/')
 @app.route('/home')
 def index():
-    return render_template('index_html')
+    return render_template('index.html')
 
 
 @app.route('/weather/current', methods=["GET"])
@@ -28,7 +26,6 @@ def get_weather_current():
     
     _, location_valid, _, request_args_validated = validate_weather(request.args)
     if not location_valid:
-        print(request.args)
         return jsonify({"error": "location data invalid"}), 422
     
     value_city = request_args_validated[1]
@@ -80,7 +77,6 @@ def get_weather_current():
                 con.commit()
         
     result = {"row": dict(zip(weather_data_fields, data_returning))}
-    # return render_template('weather.html', data=data_returning)
     return jsonify(result), 200
 
 
@@ -130,9 +126,7 @@ def get_weather_history_search():
     data_dict = {"rows": []}
     for row in data:
         data_dict["rows"].append(dict(zip(weather_data_fields, row)))
-    # print(json.dumps(jsonify(data_dict).json, indent=4))
              
-    #return render_template('weather.html', data=data)
     return jsonify(data_dict)
 
 
@@ -164,7 +158,6 @@ def add_weather_history():
 @app.route("/weather/history/<int:rowid>", methods=["PUT"])
 def update_weather_history(rowid: int):
     data = request.get_json()
-    
     if data is None:
         return jsonify({"error": "POST body empty"}), 400  # Bad request status code
     
@@ -172,14 +165,12 @@ def update_weather_history(rowid: int):
     if not (datetime_valid and location_valid and data_valid):
         return jsonify({"error": "invalid data"}), 422  # Unprocessable request error
     
-    
     field_dtypes = {"datetime": str, "city": str, "country": str, "latitude": float, "longitude": float, "temperature_c": float, \
             "feelslike_c": float, "humidity": float, "condition": str, "wind_kph": float}
     conditions = params2sql(received_params=dict(zip(weather_data_fields[1:], values)), params_dtypes=field_dtypes, relationship="=")
     
     with sqlite3.connect("weather.db") as con:
         cur = con.cursor()
-        print("UPDATE weather_data SET " + ", ".join(conditions) + " WHERE rowid=" + str(rowid) + " RETURNING rowid, *")
         cur.execute("UPDATE weather_data SET " + ", ".join(conditions) + " WHERE rowid=" + str(rowid) + " RETURNING rowid, *")
         result = {"rows": [dict(zip(weather_data_fields, cur.fetchone()))]}
     
@@ -219,7 +210,6 @@ def get_weather_forecast():
         if (value_latitude is not None) and (value_longitude is not None):
             data_response = weather_req_manager.get("forecast", q=f"{value_latitude},{value_longitude}", days=forecast_days)
     
-      
     data = []
     if (data_response is not None) and (data_response.get("error", None) is None):
         for day in data_response["forecast"]["forecastday"]:

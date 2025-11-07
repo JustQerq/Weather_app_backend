@@ -34,6 +34,14 @@ def params2sql(received_params, params_dtypes: dict, params_aliases = None, rela
 
 
 def validate_weather(entry):
+    """Validate a database entry
+
+    Args:
+        entry (dict): dictionary with all database fields and corresponding values, except rowid
+
+    Returns:
+        (bool, bool, bool, list): isDatetimeValid, isLocationValid, isDataValid, correctedValues
+    """
     datetime_valid = True
     location_valid = True
     data_valid = True
@@ -71,7 +79,7 @@ def validate_weather(entry):
     
     try:
         temperature_c = float(entry.get("temperature_c", None))
-        if temperature_c < -273.15:
+        if temperature_c < -273.15:  # Absolute zero
             temperature_c = None
     except:
         temperature_c = None

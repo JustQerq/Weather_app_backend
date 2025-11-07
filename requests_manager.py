@@ -40,12 +40,3 @@ class WeatherRequestsManager(RequestsManager):
         url = self.BASE_URL + self.REQUEST_URLs[request] + f"?key={self.API_KEY}&" + "&".join([f"{k}={v}" for k,v in kwargs.items()])
         response = requests.get(url).json()
         return response
-
-
-weather_req_manager = WeatherRequestsManager()
-
-if __name__ == "__main__":
-    #response = json.dumps(weather_req_manager.get("autocomplete", q="Lo Great Britain"), indent=4)
-    #response = weather_req_manager.get("current", q="Moscow, Russia")["location"]["country"]
-    response = json.dumps(weather_req_manager.get("forecast", q="London", days=5), indent=4)
-    print(response)

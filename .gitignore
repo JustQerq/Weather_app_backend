@@ -69,8 +69,8 @@ db.sqlite3
 db.sqlite3-journal
 
 # Sqlite:
-*.db
-*.db-journal
+# *.db
+# *.db-journal
 
 # Flask stuff:
 instance/
