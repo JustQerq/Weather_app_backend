@@ -1,5 +1,5 @@
 # Overview
-Backend for a weather application by Oleg Samarets.
+Backend for a weather application by Oleg Samarets as part of a test assignment for Project Manager Accelerator.
 - Written in Python Flask
 - Supports all the CRUD operations for an internal SQLite database
 - Ensures secure data transfer via RESTful API
